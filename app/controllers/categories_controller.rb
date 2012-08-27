@@ -1,5 +1,5 @@
 class CategoriesController < KnowledgebaseController
-	unloadable
+  unloadable
 
   #Authorize against global permissions defined in init.rb
   before_filter :authorize_global
