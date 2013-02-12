@@ -1,6 +1,9 @@
+    NOTE: Article searching does not work in the 1.x and 2.x branches of this plugin
+
 # Redmine Knowledgebase plugin
 
 This plugin adds generic knowledgebase funcationlity to the redmine project management application.
+
 
 ## Compatibility
 
