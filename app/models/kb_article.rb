@@ -26,7 +26,8 @@ class KbArticle < ActiveRecord::Base
                 :description => Proc.new { |o| "#{o.content}" },
                 :datetime => :created_at,
                 :type => 'articles',
-                :url => Proc.new { |o| {:controller => 'articles', :action => 'show', :id => nil, :article_id => o.id} }
+                #:url => Proc.new { |o| {:controller => 'articles', :action => 'show', :id => nil, :article_id => o.id} }
+                :url => Proc.new { |o| {:controller => 'articles', :action => 'show', :id => o.id} }
 
   has_many :comments, :as => :commented, :dependent => :delete_all, :order => "created_on"
 

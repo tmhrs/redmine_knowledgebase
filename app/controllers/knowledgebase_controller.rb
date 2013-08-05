@@ -1,26 +1,26 @@
 class KnowledgebaseController < ApplicationController
   unloadable
-  
+
   #Authorize against global permissions defined in init.rb
   before_filter :authorize_global, :except => [:index, :show]
   before_filter :authorize_global, :only   => [:index, :show], :unless => :allow_anonymous_access?
-  
+
   rescue_from ActionView::MissingTemplate, :with => :force_404
   rescue_from ActiveRecord::RecordNotFound, :with => :force_404
-  
+
   def index
     begin
       summary_limit = Setting['plugin_redmine_knowledgebase']['knowledgebase_summary_limit'].to_i
     rescue
       summary_limit = 5
     end
-    
+
     @categories = KbCategory.find(:all)
     @articles_newest   = KbArticle.find(:all, :limit => summary_limit, :order => 'created_at DESC')
     @articles_updated  = KbArticle.find(:all, :limit => summary_limit, :conditions => ['created_at <> updated_at'], :order => 'updated_at DESC')
-    
+
     #FIXME the following method still requires ALL records to be loaded before being filtered.
-    
+
     a = KbArticle.find(:all, :include => :viewings).sort_by(&:view_count)
     a = a.drop(a.count - summary_limit) if a.count > summary_limit
     @articles_popular  = a.reverse
@@ -29,6 +29,22 @@ class KnowledgebaseController < ApplicationController
     @articles_toprated = a.reverse
 
     @tags = KbArticle.tag_counts
+
+    #For default search
+    if Project.first(:order => 'id').id != KbArticle.first(:order => 'project_id').project_id
+      KbArticle.update_all :project_id => Project.first(:order => 'id').id
+    end
+  end
+
+  def search
+    @categories = []
+    @articles = []
+    @search_word = URI.decode(params[:q].to_s)
+    search_word = "%" + URI.decode(params[:q].to_s) + "%"
+    if @search_word.present?
+      @categories = KbCategory.where(["title like ? or description like ?", search_word, search_word])
+      @articles = KbArticle.where(["title like ? or summary like ? or content like ?", search_word, search_word, search_word])
+    end
   end
 
 #########
@@ -40,7 +56,7 @@ protected
       render_403
     end
   end
-  
+
   def allow_anonymous_access?
     Setting['plugin_redmine_knowledgebase']['knowledgebase_anonymous_access'].to_i == 1
   end

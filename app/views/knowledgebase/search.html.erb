@@ -1,0 +1,57 @@
+<% html_title l(:knowledgebase_title) %>
+<% if @categories.length == 0 and !User.current.logged? %>
+	<h2><%= l(:knowledgebase_title) %></h2>
+	<p><%= l(:message_no_categories) %></p>
+<% else %>
+
+  <div class="contextual">
+    <form class="form-search" action="/knowledgebase/search" method="get" role="search">
+      <input class="input-medium search-query" name="q" placeholder=<%= l(:label_search_knowledgebase) %> type="text" value="<%= params[:q] %>">
+      <input class="btn" alt=<%= l(:label_search) %> value=<%= l(:label_search) %> type="submit">
+    </form>
+  </div>
+
+  <p id="category-crumbs" class="breadcrumb">
+    <%= link_to l(:label_kb_home), { :controller => 'knowledgebase', :action => 'index' } %>
+  </p>
+
+  <% truncate_length = 100 if local_assigns[:truncate_length].nil? %>
+  <h3><%= l(:label_category) %> (<%= @categories.count.to_s %>)</h3>
+  <% if @categories.count > 0 %>
+    <dl id="search-results">
+      <% @categories.each do |category| %>
+        &nbsp;
+        <%= link_to highlight_tokens(truncate(category.title, :length => truncate_length), [@search_word]), { :controller => 'categories', :action => 'show', :id => category.id }, :title => category.title %><br />
+        <dd><span class="description"><%= highlight_tokens(category.description, [@search_word]) %></span>
+        <span class="author">
+          <%= l(:field_created_on) %>：<%= format_time(category.created_at).to_date.strftime("%Y-%m-%d") %>
+          &nbsp;/&nbsp;
+          <%= l(:field_updated_on) %>：<%= format_time(category.updated_at).to_date.strftime("%Y-%m-%d") %>
+        </span></dd>
+      <% end %>
+    </dl>
+  <% end %>
+
+  <h3><%= l(:label_title_articles) %> (<%= @articles.count.to_s %>)</h3>
+  <% if @articles.count > 0 %>
+    <dl id="search-results">
+      <% @articles.each do |article| %>
+        &nbsp;
+        <%= link_to highlight_tokens(truncate(article.title, :length => truncate_length), [@search_word]), { :controller => 'articles', :action => 'show', :id => article.id }, :title => article.title %><br />
+        <dd>
+          <span class="description"><%= highlight_tokens(article.summary, [@search_word]) %></span>
+          <span class="description"><%= highlight_tokens(article.content, [@search_word]) %></span>
+          <span class="author">
+            <%= l(:field_created_on) %>：<%= format_time(article.created_at).to_date.strftime("%Y-%m-%d") %>
+            &nbsp;/&nbsp;
+            <%= l(:field_updated_on) %>：<%= format_time(article.updated_at).to_date.strftime("%Y-%m-%d") %>
+          </span>
+        </dd>
+      <% end %>
+    </dl>
+  <% end %>
+
+<% content_for :header_tags do %>
+	<%= stylesheet_link_tag 'knowledgebase', :plugin => 'redmine_knowledgebase' %>
+<% end %>
+<% end %>

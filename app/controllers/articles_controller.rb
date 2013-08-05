@@ -1,17 +1,17 @@
 class ArticlesController < KnowledgebaseController
   unloadable
-  
+
   helper :attachments
   include AttachmentsHelper
 
   before_filter :get_article, :only => [:add_attachment, :show, :edit, :update, :add_comment, :destroy, :destroy_comment]
-  
+
   def new
     @article = KbArticle.new
     @default_category = params[:category_id]
     @article.category_id = params[:category_id]
   end
-  
+
   def rate
     @article = KbArticle.find(params[:id])
     rating = params[:rating].to_i
@@ -21,11 +21,12 @@ class ArticlesController < KnowledgebaseController
       f.js
     end
   end
-  
-  def create    
+
+  def create
     @article = KbArticle.new(params[:article])
     @article.category_id = params[:category_id]
     @article.author_id = User.current.id
+    @article.project_id = Project.first(:order => 'id').id
     if @article.save
       attachments = attach(@article, params[:attachments])
       flash[:notice] = l(:label_article_created, :title => @article.title)
@@ -34,16 +35,16 @@ class ArticlesController < KnowledgebaseController
       render(:action => 'new')
     end
   end
-  
+
   def show
     @article.view request.remote_addr, User.current
     @attachments = @article.attachments.find(:all, :order => "created_on DESC")
     @comments = @article.comments
   end
-  
+
   def edit
   end
-  
+
   def update
     @article.updater_id = User.current.id
 	params[:article][:category_id] = params[:category_id]
@@ -55,7 +56,7 @@ class ArticlesController < KnowledgebaseController
       render({:action => 'edit', :id => @article.id})
     end
   end
-  
+
   def add_comment
     @comment = Comment.new(params[:comment])
     @comment.author = User.current || nil
@@ -72,7 +73,7 @@ class ArticlesController < KnowledgebaseController
     @article.comments.find(params[:comment_id]).destroy
     redirect_to :action => 'show', :id => @article
   end
-  
+
   def destroy
     @article.destroy
     flash[:notice] = l(:label_article_removed)
@@ -80,10 +81,10 @@ class ArticlesController < KnowledgebaseController
   end
 
   def add_attachment
-    attachments = attach(@article, params[:attachments])    
+    attachments = attach(@article, params[:attachments])
     redirect_to({ :action => 'show', :id => @article.id })
   end
-  
+
   def tagged
     @tag = params[:id]
     @list = KbArticle.tagged_with(@tag)
@@ -94,7 +95,7 @@ class ArticlesController < KnowledgebaseController
     @content = (params[:article] ? params[:article][:content] : nil)
     render :layout => false
   end
-  
+
   def comment
     @article_id = params[:article_id]
 
