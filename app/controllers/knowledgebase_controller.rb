@@ -31,7 +31,9 @@ class KnowledgebaseController < ApplicationController
     @tags = KbArticle.tag_counts
 
     #For default search
-    if Project.first(:order => 'id').id != KbArticle.first(:order => 'project_id').project_id
+    project = Project.first(:order => 'id')
+    kbarticle = KbArticle.first(:order => 'project_id')
+    if (project ? project.id : 0) != (kbarticle ? kbarticle.project_id : 0)
       KbArticle.update_all :project_id => Project.first(:order => 'id').id
     end
   end

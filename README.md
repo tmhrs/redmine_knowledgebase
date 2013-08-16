@@ -1,10 +1,16 @@
+## 機能追加
+*プラグイン内での検索機能の追加
+*Redmine標準の検索機能に記事がヒットするよう修正
+
+
+
 This plugin adds generic knowledgebase funcationlity to the redmine project management application.
 
 ## Compatibility
 
 The plugin is available in two (2) versions, which track the Redmine versions to reflect their level of compatibility. If you're using Redmine 1.x.x, use a 0.x.x or 1.x.x version of the Knowledgebase; if you're using Redmine 2+, use a Knowledgebase version >= 2.
 
-This plugin also incorporates the following libraries directly. 
+This plugin also incorporates the following libraries directly.
 
 * [acts_as_viewed](http://rubyforge.org/projects/acts-as-viewed)
 * [acts_as_rated](http://rubyforge.org/projects/acts-as-rated)
