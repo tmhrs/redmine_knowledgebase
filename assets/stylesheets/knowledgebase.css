@@ -5,7 +5,12 @@ h3.cattitle {
 	border-bottom: 1px solid #ddd;
 }
 
+.wiki {
+	word-break: break-all;
+}
+
 .most-popular {
+	word-break: break-all;
 	background-color: #f6f6f6;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
@@ -38,6 +43,7 @@ h3.cattitle {
 }
 
 .category-articles .article-icon {
+	word-break: break-all;
 	width: 28%;
 	float: left;
 }
@@ -62,7 +68,7 @@ h3.cattitle {
 
 .categories { background-color:#F1F5F8; border:solid 1px #D5E2F1; -moz-border-radius: 5px; -webkit-border-radius: 5px; margin: 10px 0px; padding: 10px; }
 .category-header { padding-top: 0; font-size:15px; font-weight:bold; padding-bottom: 10px; border-bottom: solid 1px #D5E2F1; }
-.category-title { background-image: url(../images/category.png); background-repeat: no-repeat; padding-left:22px; }
+.category-title { background-image: url(../images/category.png); background-repeat: no-repeat; padding-left:22px; word-break: break-all;}
 .category-title a { font-weight:bold;}
 
 .rating-title { font-size:14px; font-weight:bold; color:#C60; }

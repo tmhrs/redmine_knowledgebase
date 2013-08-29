@@ -1,4 +1,5 @@
 match "/knowledgebase", :to => "knowledgebase#index", :via => :get
+match "/knowledgebase/search", :to => "knowledgebase#search", :via => :get
 
 scope "/knowledgebase" do
   resources :categories, :via => [:get, :post]

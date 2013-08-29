@@ -1,5 +1,5 @@
---- 
-ja: 
+---
+ja:
   allow_anon_access: 匿名アクセス許可
   allow_sort_category_tree: カテゴリをアルファベット順に並び替える
   field_tag_list: タグリスト
@@ -8,7 +8,7 @@ ja:
   label_article_plural: 知識DB記事
   label_article_removed: 記事を削除しました．
   label_article_updated: 記事を更新しました．
-  label_article_viewed: 
+  label_article_viewed:
     one: "Viewed once"
     other: "Viewed %{count} times"
   label_category: カテゴリ
@@ -35,10 +35,10 @@ ja:
   label_subcategories: サブカテゴリ群
   label_summary: 概要
   label_summary_newest_articles: "%{ago}前に作成 in %{category}"
-  label_summary_popular_articles: 
+  label_summary_popular_articles:
     one: "Viewed once since %{created}"
     other: "Viewed %{count} times since %{created}"
-  label_summary_toprated_articles: 
+  label_summary_toprated_articles:
     one: "評価: %{rating_avg}/%{rating_max} from 1票"
     other: "評価: %{rating_avg}/%{rating_max} from %{count} 票"
   label_summary_updated_articles: "%{ago}前に更新"
@@ -65,3 +65,14 @@ ja:
   title_tags: タグ
   title_top_rated_articles: 評価の高い記事
   title_votes: 投票数
+
+  project_module_knowledgebase: 知識DB
+  permission_view_articles: 記事の閲覧
+  permission_comment_and_rate_articles: 記事へのコメント・評価
+  permission_create_articles: 記事の追加
+  permission_edit_articles: 記事の編集
+  permission_manage_articles: 記事の管理
+  permission_manage_articles_comments: 記事のコメントの管理
+  permission_create_article_categories: 記事へのカテゴリの追加
+  permission_manage_article_categories: 記事のカテゴリの管理
+  label_search_knowledgebase: 知識DB内の検索
