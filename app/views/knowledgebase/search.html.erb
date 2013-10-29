@@ -4,13 +4,7 @@
 	<p><%= l(:message_no_categories) %></p>
 <% else %>
 
-  <div class="contextual">
-    <form class="form-search" action="/knowledgebase/search" method="get" role="search">
-      <input class="input-medium search-query" name="q" placeholder=<%= l(:label_search_knowledgebase) %> type="text" value="<%= params[:q] %>">
-      <input class="btn" alt=<%= l(:label_search) %> value=<%= l(:label_search) %> type="submit">
-    </form>
-  </div>
-
+  <%= render :partial => "search_field" %>
   <p id="category-crumbs" class="breadcrumb">
     <%= link_to l(:label_kb_home), { :controller => 'knowledgebase', :action => 'index' } %>
   </p>
@@ -21,8 +15,8 @@
     <dl id="search-results">
       <% @categories.each do |category| %>
         &nbsp;
-        <%= link_to highlight_tokens(truncate(category.title, :length => truncate_length), [@search_word]), { :controller => 'categories', :action => 'show', :id => category.id }, :title => category.title %><br />
-        <dd><span class="description"><%= highlight_tokens(category.description, [@search_word]) %></span>
+        <%= link_to highlight_tokens(truncate(category.title, :length => truncate_length), @search_words), { :controller => 'categories', :action => 'show', :id => category.id }, :title => category.title %><br />
+        <dd><span class="description"><%= highlight_tokens(category.description, @search_words) %></span>
         <span class="author">
           <%= l(:field_created_on) %>：<%= format_time(category.created_at).to_date.strftime("%Y-%m-%d") %>
           &nbsp;/&nbsp;
@@ -37,10 +31,10 @@
     <dl id="search-results">
       <% @articles.each do |article| %>
         &nbsp;
-        <%= link_to highlight_tokens(truncate(article.title, :length => truncate_length), [@search_word]), { :controller => 'articles', :action => 'show', :id => article.id }, :title => article.title %><br />
+        <%= link_to highlight_tokens(truncate(article.title, :length => truncate_length), @search_words), { :controller => 'articles', :action => 'show', :id => article.id }, :title => article.title %><br />
         <dd>
-          <span class="description"><%= highlight_tokens(article.summary, [@search_word]) %></span>
-          <span class="description"><%= highlight_tokens(article.content, [@search_word]) %></span>
+          <span class="description"><%= highlight_tokens(article.summary, @search_words) %></span>
+          <span class="description"><%= highlight_tokens(article.content, @search_words) %></span>
           <span class="author">
             <%= l(:field_created_on) %>：<%= format_time(article.created_at).to_date.strftime("%Y-%m-%d") %>
             &nbsp;/&nbsp;

@@ -1,0 +1,64 @@
+<div id="kb_project_settings">
+<%
+    @kb_project_setting = KbProjectSettings.find_or_create(@project.id)
+%>
+<%= labelled_form_for :settings, @kb_project_setting,
+                      :url => {:controller => 'knowledgebase_project_settings',
+                      :action => 'update', :id => @project, :tab => "knowledgebase",
+                      :partial => 'knowledgebase_project_settings/update',
+                      :setting_id => @kb_project_setting.id} do |f| %>
+
+  <%= error_messages_for 'issue_templates_setting' %>
+
+  <div class="box tabular settings">
+    <p>
+      <label><%= l(:flg_involved_articles) %></label>
+      <%= check_box_tag("flg_involved_articles", true, @kb_project_setting[:flg_involved_articles]) %>
+    </p>
+
+    <p>
+      <label><%= l(:show_involved_articles_count) %></label>
+      <%= select_tag("show_involved_articles_count",
+                     options_for_select(['1','2','3','4','5','6','7','8','9','10'],
+                     @kb_project_setting[:show_involved_articles_count] || 5 )) %>
+    </p>
+
+    <p>
+      <label><%= l(:use_columns_for_default_search) %></label>
+      <% if @kb_project_setting[:use_columns_for_default_search].present? %>
+        <% Setting.issue_list_default_columns.each do |column| %>
+          <%= check_box_tag("use_columns_for_default_search[#{column}]", true,
+                            YAML.load(@kb_project_setting[:use_columns_for_default_search]).include?(column)) + l(:"field_#{column}") %><br />
+        <% end %>
+        <% if @project.issue_categories.present? %>
+          <%= check_box_tag("use_columns_for_default_search[category]", true,
+                            YAML.load(@kb_project_setting[:use_columns_for_default_search]).include?("category")) + l(:field_category) %><br />
+        <% end %>
+        <% @project.all_issue_custom_fields.each do |custom_field| %>
+          <%= check_box_tag("use_columns_for_default_search[cf_#{custom_field.id}]", true,
+                            YAML.load(@kb_project_setting[:use_columns_for_default_search]).include?("cf_#{custom_field.id}")) + custom_field.name %><br />
+        <% end %>
+        <%= check_box_tag("use_columns_for_default_search[any_keyword]", true,
+                          YAML.load(@kb_project_setting[:use_columns_for_default_search]).include?("any_keyword")) %>
+        <%= text_field_tag "any_keyword", @kb_project_setting[:any_keyword],  :size => 30 %>&nbsp;<%= l(:label_any_keyword) %><br />
+
+      <% else %>
+        <% Setting.issue_list_default_columns.each do |column| %>
+          <%= check_box_tag("use_columns_for_default_search[#{column}]", true) + l(:"field_#{column}") %><br />
+        <% end %>
+        <% if @project.issue_categories.present? %>
+          <%= check_box_tag("use_columns_for_default_search[category]", true) + l(:field_category) %><br />
+        <% end %>
+        <% @project.all_issue_custom_fields.each do |custom_field| %>
+          <%= check_box_tag("use_columns_for_default_search[cf_#{custom_field.id}]", true) + custom_field.name %><br />
+        <% end %>
+        <%= check_box_tag("use_columns_for_default_search[any_keyword]", true) %>
+        <%= text_field_tag "any_keyword", nil,  :size => 30 %>&nbsp;<%= l(:label_any_keyword) %><br />
+      <% end %>
+    </p>
+
+    <%= submit_tag l(:button_update) %>
+  </div>
+<% end %>
+</div>
+

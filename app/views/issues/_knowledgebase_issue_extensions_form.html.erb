@@ -1,0 +1,96 @@
+<% kb_project_setting = KbProjectSettings.find_or_create(@project.id) %>
+<% if (!@project.blank?) && (@project.module_enabled?(:knowledgebase)) && (kb_project_setting[:flg_involved_articles]) %>
+  <%
+    if params[:search_word].kind_of?(String) then
+      search_words = params[:search_word].gsub(/　/," ").split(nil)
+    else
+      search_words = params[:search_word] || []
+    end
+    query_params = ""
+    searched_articles = nil
+
+    if params[:commit] == l(:label_default_search)
+      search_words.each do |search_word|
+        if search_word == "any_keyword" then
+          keywords = kb_project_setting[:any_keyword].gsub(/　/," ").split(nil)
+          keywords.each do |keyword|
+            wild_search_word = '"%' + URI.decode(keyword.to_s) + '%"'
+            query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
+          end
+        else
+          if search_word == "category" then
+            wild_search_word = '"%' + URI.decode(@issue.category.name.to_s) + '%"' if @issue.category
+          elsif (search_word =~ /^cf_\d+$/).nil? then
+            wild_search_word = '"%' + URI.decode(@issue[search_word].to_s) + '%"'
+          else
+            custom_field_value = @issue.custom_field_values.detect {|c| c.custom_field.id == search_word.gsub(/[^0-9]/,"").to_i}
+            wild_search_word = '"%' + URI.decode(custom_field_value.to_s) + '%"'
+          end
+          query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word and wild_search_word != '"%%"'
+        end
+      end unless search_words == []
+      query_params = query_params.gsub(")  (", ") OR (")
+    else
+      search_words.each do |search_word|
+        wild_search_word = '"%' + URI.decode(search_word.to_s) + '%"'
+        query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
+      end unless search_words == []
+      if params[:and_or] == "AND" then
+        query_params = query_params.gsub(")  (", ") AND (")
+      else
+        query_params = query_params.gsub(")  (", ") OR (")
+      end
+    end
+
+    if query_params.present?
+      searched_articles = KbArticle.find(:all, :conditions => query_params, :include => :ratings).sort_by(&:rated_average)
+      #, :include => :ratings).sort_by(&:rated_count)
+    end
+  %>
+  <hr />
+  <div class="contextual">
+    <%= form_tag({:controller => 'issues', :action => 'show', :id => @issue.id}, :method => :get) do %>
+      <%= text_field_tag "search_word", (params[:commit] == l(:label_search) ?  params[:search_word].gsub(/　/," ").strip : nil),
+                         {:placeholder => l(:label_search_keyword), :size => 25} %>
+      <%= select_tag("and_or", options_for_select(['AND','OR'], params[:and_or])) %>
+      <%= submit_tag l(:label_search) %>
+    <% end %>
+  </div>
+
+  <div id="knowledgebase_issue_extensions_form">
+    <p style="display:inline;" ><strong><%= l(:involved_articles) %></strong>
+      &nbsp;
+      <%= form_tag({:controller => 'issues', :action => 'show', :id => @issue.id}, :method => :get) do %>
+        <% if kb_project_setting[:use_columns_for_default_search].present? %>
+          <%= hidden_field_tag "search_word", YAML.load(kb_project_setting[:use_columns_for_default_search]) %>
+        <% else %>
+          <%= hidden_field_tag "search_word", @issue.subject %>
+        <% end %>
+        <%= submit_tag l(:label_default_search) %>
+      <% end %>
+    </p>
+    <div id="knowledgebase_issue_extensions_search">
+      <% if searched_articles.present? %>
+        <fieldset class="searched-articles" inner-droppableid="searched-articles"><legend><%= l(:label_searched_articles) %></legend>
+          <% count = 0 %>
+          <% searched_articles.reverse_each do |searched_article| %>
+            <li id="article_<%= searched_article.id %>" class="draggable"><div class="tooltip">
+              <dt style="text-indent:1em">
+                <%= link_to truncate(searched_article.title, :length => 80), { :controller => 'articles', :action => 'show', :id => searched_article.id }, :target=>["_blank"] %>
+              </dt>
+              <dd><span class="description"><%= truncate(searched_article.summary, :length => 150) %></span></dd>
+            </li>
+            <% count += 1 %>
+            <% break if count == kb_project_setting[:show_involved_articles_count] %>
+          <% end unless searched_articles == nil %>
+        </fieldset>
+      <% else %>
+        <% unless search_words == [] %>
+          <fieldset class="searched-articles" inner-droppableid="searched-articles"><legend><%= l(:label_searched_articles) %></legend>
+            <dt style="text-indent:1em"><%= l(:label_search_result_none) %></dt>
+          </fieldset>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

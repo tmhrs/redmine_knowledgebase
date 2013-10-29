@@ -1,0 +1,8 @@
+<div class="contextual">
+  <form class="form-search" action="/knowledgebase/search" method="get" role="search">
+    <input class="input-medium search-query" name="q" placeholder=<%= l(:label_search_knowledgebase) %> type="text"
+           value="<%= (params[:q].nil? ? nil : params[:q].gsub(/　/," ").strip) %>" size=30>
+    <%= select_tag("and_or", options_for_select(['AND','OR'], params[:and_or])) %>
+    <input class="btn" alt=<%= l(:label_search) %> value=<%= l(:label_search) %> type="submit">
+  </form>
+</div>

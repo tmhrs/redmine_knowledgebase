@@ -1,9 +1,4 @@
-<div class="contextual">
-  <form class="form-search" action="/knowledgebase/search" method="get" role="search">
-    <input class="input-medium search-query" name="q" placeholder=<%= l(:label_search_knowledgebase) %> type="text" value="<%= params[:q] %>">
-    <input class="btn" alt=<%= l(:label_search) %> value=<%= l(:label_search) %> type="submit">
-  </form>
-</div>
+<%= render :partial => "knowledgebase/search_field" %>
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'knowledgebase', :plugin => 'redmine_knowledgebase' %>

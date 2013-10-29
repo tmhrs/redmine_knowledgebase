@@ -1,3 +1,4 @@
+# encoding: utf-8
 class KnowledgebaseController < ApplicationController
   unloadable
 
@@ -41,18 +42,29 @@ class KnowledgebaseController < ApplicationController
   def search
     @categories = []
     @articles = []
-    @search_word = URI.decode(params[:q].to_s)
-    search_word = "%" + URI.decode(params[:q].to_s) + "%"
-    if @search_word.present?
-      @categories = KbCategory.where(["title like ? or description like ?", search_word, search_word])
-      @articles = KbArticle.where(["title like ? or summary like ? or content like ?", search_word, search_word, search_word])
+    categories_query_params = ""
+    articles_query_params = ""
+    @search_words = URI.decode(params[:q].to_s).gsub(/　/," ").split(nil)
+    @search_words.each do |search_word|
+      wild_search_word = '"%' + URI.decode(search_word.to_s) + '%"'
+      categories_query_params += " (title LIKE #{wild_search_word} OR description LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
+      articles_query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
     end
+    if params[:and_or] == "AND" then
+      categories_query_params = categories_query_params.gsub(")  (", ") AND (")
+      articles_query_params = articles_query_params.gsub(")  (", ") AND (")
+    else
+      categories_query_params = categories_query_params.gsub(")  (", ") OR (")
+      articles_query_params = articles_query_params.gsub(")  (", ") OR (")
+    end
+    p @search_words
+    @categories = KbCategory.find(:all, :conditions => categories_query_params) if categories_query_params != ""
+    @articles = KbArticle.find(:all, :conditions => articles_query_params, :include => :ratings).sort_by(&:rated_average) if articles_query_params != ""
   end
 
 #########
 protected
 #########
-
   def is_user_logged_in
     if !User.current.logged?
       render_403

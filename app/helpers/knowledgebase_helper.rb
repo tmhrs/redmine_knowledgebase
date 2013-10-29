@@ -27,7 +27,7 @@ module KnowledgebaseHelper
     when "popular"
       output = l(:label_summary_popular_articles,
         :count => article.view_count,
-        :created => article.created_at.to_formatted_s(:rfc822))
+        :created => format_time(article.created_at).to_date.strftime("%Y-%m-%d"))
     when "toprated"
       output = l(:label_summary_toprated_articles,
         :rating_avg => article.rating_average.to_s,

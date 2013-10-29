@@ -1,6 +1,7 @@
 require 'redmine'
 require 'acts_as_viewed'
 require 'acts_as_rated'
+require 'knowledgebase_issue_hooks'
 require 'redmine_acts_as_taggable_on/initialize'
 
 #Register KB macro
@@ -64,6 +65,10 @@ Redmine::Plugin.register :redmine_knowledgebase do
       :knowledgebase => :index,
       :categories    => [:index, :show, :new, :create, :edit, :update, :destroy]
     }
+
+    permission :manage_knowledgebase, {
+      :knowledgebase_project_settings => [:show, :update]
+    }
   end
 
   menu :top_menu, :knowledgebase, { :controller => 'knowledgebase', :action => 'index' }, :caption => :knowledgebase_title,
@@ -73,4 +78,12 @@ Redmine::Plugin.register :redmine_knowledgebase do
 	}
 
   Redmine::Search.available_search_types << 'kb_articles'
+end
+
+
+Rails.configuration.to_prepare do
+  require_dependency 'projects_helper'
+  unless ProjectsHelper.included_modules.include? KnowledgebaseProjectsHelperPatch
+    ProjectsHelper.send(:include, KnowledgebaseProjectsHelperPatch)
+  end
 end

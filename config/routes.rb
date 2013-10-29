@@ -17,3 +17,7 @@ scope "/knowledgebase" do
     end
   end
 end
+
+RedmineApp::Application.routes.draw do
+  match 'projects/:id/knowledgebase_project_settings/:action', :controller => 'knowledgebase_project_settings', :via => [:get, :post, :put]
+end

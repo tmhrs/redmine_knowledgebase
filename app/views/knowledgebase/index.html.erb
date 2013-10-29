@@ -5,13 +5,7 @@
 	<p><%= l(:message_no_categories) %></p>
 <% else %>
 
-  <div class="contextual">
-    <form class="form-search" action="knowledgebase/search" method="get" role="search">
-      <input class="input-medium search-query" name="q" placeholder="知識DB内の検索" type="text" value="<%= params[:q] %>">
-      <input class="btn" alt="検索" value="検索" type="submit">
-    </form>
-  </div>
-
+  <%= render :partial => "search_field" %>
   <h2><%= l(:knowledgebase_title) %></h2>
     <div class="contextual">
       <% if @categories.length > 0 %>

@@ -1,8 +1,7 @@
 ## 機能追加
-*プラグイン内での検索機能の追加
-*Redmine標準の検索機能に記事がヒットするよう修正
-
-
+* プラグイン内での検索機能の追加(AND、OR検索選択可)
+* Redmine標準の検索機能に記事がヒットするよう修正
+* チケット画面へ知識DB検索フィールドの追加(平均レーティングの降順で表示)
 
 This plugin adds generic knowledgebase funcationlity to the redmine project management application.
 

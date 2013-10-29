@@ -9,8 +9,8 @@ ja:
   label_article_removed: 記事を削除しました．
   label_article_updated: 記事を更新しました．
   label_article_viewed:
-    one: "Viewed once"
-    other: "Viewed %{count} times"
+    one: "1人が閲覧"
+    other: "%{count}人が閲覧"
   label_category: カテゴリ
   label_category_created: "'%{title}'カテゴリーを生成しました．"
   label_category_deleted: カテゴリーを削除しました．
@@ -36,8 +36,8 @@ ja:
   label_summary: 概要
   label_summary_newest_articles: "%{ago}前に作成 in %{category}"
   label_summary_popular_articles:
-    one: "Viewed once since %{created}"
-    other: "Viewed %{count} times since %{created}"
+    one: "作成日:%{created} / 閲覧者数:1"
+    other: "作成日:%{created} / 閲覧者数:%{count}"
   label_summary_toprated_articles:
     one: "評価: %{rating_avg}/%{rating_max} from 1票"
     other: "評価: %{rating_avg}/%{rating_max} from %{count} 票"
@@ -45,9 +45,9 @@ ja:
   label_title: 件名
   label_title_articles: 記事
   label_title_category: カテゴリ
-  label_updated_who: "Updated by %{updater} %{age} ago"
-  message_no_articles: 知識データベースに追加された記事はありません．早速作りましょう！
-  message_no_categories: "Unfortunately, there aren't any Categories defined, and you need to be logged in to create new categories."
+  label_updated_who: "%{updater} が%{age}に更新"
+  message_no_articles: 知識データベースにはまだ記事がありません。早速作りましょう！
+  message_no_categories: "カテゴリが登録されていません。カテゴリの作成を行う場合はログインする必要があります。"
   show_category_totals: ツリーの全てのカテゴリを表示する
   summary_item_limit: 知識データベースに表示する記事数
   title_add_comment: コメントを追加
@@ -61,7 +61,7 @@ ja:
   title_new_category: 新規カテゴリ
   title_newest_articles: 最新の記事
   title_recently_updated_articles: 最近更新された記事
-  title_tagged_articles: "Articles tagged with %{tag}"
+  title_tagged_articles: "「%{tag}」のタグがついている記事"
   title_tags: タグ
   title_top_rated_articles: 評価の高い記事
   title_votes: 投票数
@@ -76,3 +76,16 @@ ja:
   permission_create_article_categories: 記事へのカテゴリの追加
   permission_manage_article_categories: 記事のカテゴリの管理
   label_search_knowledgebase: 知識DB内の検索
+
+  permission_manage_knowledgebase: プロジェクト毎の設定変更
+  notice_failed_update: 更新に失敗しました。
+  involved_articles: 関連性の高い記事
+  flg_involved_articles: チケット画面に知識DBの検索フィールドを追加
+  show_involved_articles_count: チケット画面で表示する記事数の上限
+  use_columns_for_default_search: チケット画面での標準検索に使用する項目
+  label_default_search: 標準検索
+  label_searched_articles: 検索結果
+  label_search_keyword: キーワードで検索
+  label_search_result_none: 該当なし
+  label_any_keyword: 任意のキーワード(スペース区切りで複数指定可)
+
