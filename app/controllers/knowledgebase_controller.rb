@@ -57,7 +57,6 @@ class KnowledgebaseController < ApplicationController
       categories_query_params = categories_query_params.gsub(")  (", ") OR (")
       articles_query_params = articles_query_params.gsub(")  (", ") OR (")
     end
-    p @search_words
     @categories = KbCategory.find(:all, :conditions => categories_query_params) if categories_query_params != ""
     @articles = KbArticle.find(:all, :conditions => articles_query_params, :include => :ratings).sort_by(&:rated_average) if articles_query_params != ""
   end
