@@ -44,7 +44,8 @@ class KbArticle < ActiveRecord::Base
   # a file throws the following:
   # "NoMethodError (undefined method 'project' for #(ActiveRecord::Associations::BelongsToPolymorphicAssociation))"
   def project
-    true
+    #true
+    Project.new # fake project
   end
 
 end
