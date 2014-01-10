@@ -1,5 +1,6 @@
 <% kb_project_setting = KbProjectSettings.find_or_create(@project.id) %>
-<% if (!@project.blank?) && (@project.module_enabled?(:knowledgebase)) && (kb_project_setting[:flg_involved_articles]) %>
+<% if (!@project.blank?) && (@project.module_enabled?(:knowledgebase)) &&
+      (kb_project_setting[:flg_involved_articles]) && authorize_for(:articles, :show) %>
   <%
     if params[:search_word].kind_of?(String) then
       search_words = params[:search_word].gsub(/　/," ").split(nil)
