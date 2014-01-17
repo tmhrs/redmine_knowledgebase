@@ -46,9 +46,22 @@ class KnowledgebaseController < ApplicationController
     articles_query_params = ""
     @search_words = URI.decode(params[:q].to_s).gsub(/　/," ").split(nil)
     @search_words.each do |search_word|
+
+      if ActiveRecord::Base.connection.adapter_name == "Mysql2" then
+        search_word = search_word.gsub("\\", "\\\\\\\\\\\\\\\\")
+        search_word = search_word.gsub(/"/, '\"')
+        search_word = search_word.gsub(/%/, '\%')
+        search_word = search_word.gsub(/_/, '\_')
+      elsif
+        # Avoid internal error
+        search_word = search_word.gsub(/"/, "_")
+      end
+
       wild_search_word = '"%' + URI.decode(search_word.to_s) + '%"'
-      categories_query_params += " (title LIKE #{wild_search_word} OR description LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
-      articles_query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
+      if wild_search_word != '"%%"' then
+        categories_query_params += " (title LIKE #{wild_search_word} OR description LIKE #{wild_search_word}) "
+        articles_query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) "
+      end
     end
     if params[:and_or] == "AND" then
       categories_query_params = categories_query_params.gsub(")  (", ") AND (")

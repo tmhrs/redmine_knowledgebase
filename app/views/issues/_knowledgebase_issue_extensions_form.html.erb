@@ -15,17 +15,40 @@
         if search_word == "any_keyword" then
           keywords = kb_project_setting[:any_keyword].gsub(/　/," ").split(nil)
           keywords.each do |keyword|
-            wild_search_word = '"%' + URI.decode(keyword.to_s) + '%"'
+            if ActiveRecord::Base.connection.adapter_name == "Mysql2" then
+              keyword = keyword.gsub("\\", "\\\\\\\\\\\\\\\\").gsub(/"/, '\"').gsub(/%/, '\%').gsub(/_/, '\_')
+            elsif
+              keyword = keyword.gsub(/"/, "_") # Avoid internal error
+            end
+            wild_search_word = '"%' + URI.decode(keyword) + '%"'
             query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
           end
         else
-          if search_word == "category" then
-            wild_search_word = '"%' + URI.decode(@issue.category.name.to_s) + '%"' if @issue.category
+          if search_word == "category" and @issue.category then
+            keyword = @issue.category.name.to_s
+            if ActiveRecord::Base.connection.adapter_name == "Mysql2" then
+              keyword = keyword.gsub("\\", "\\\\\\\\\\\\\\\\").gsub(/"/, '\"').gsub(/%/, '\%').gsub(/_/, '\_')
+            elsif
+              keyword = keyword.gsub(/"/, "_") # Avoid internal error
+            end
+            wild_search_word = '"%' + URI.decode(keyword) + '%"'
           elsif (search_word =~ /^cf_\d+$/).nil? then
-            wild_search_word = '"%' + URI.decode(@issue[search_word].to_s) + '%"'
+            keyword = @issue[search_word].to_s
+            if ActiveRecord::Base.connection.adapter_name == "Mysql2" then
+              keyword = keyword.gsub("\\", "\\\\\\\\\\\\\\\\").gsub(/"/, '\"').gsub(/%/, '\%').gsub(/_/, '\_')
+            elsif
+              keyword = keyword.gsub(/"/, "_") # Avoid internal error
+            end
+            wild_search_word = '"%' + URI.decode(keyword) + '%"'
           else
             custom_field_value = @issue.custom_field_values.detect {|c| c.custom_field.id == search_word.gsub(/[^0-9]/,"").to_i}
-            wild_search_word = '"%' + URI.decode(custom_field_value.to_s) + '%"'
+            keyword = custom_field_value.to_s
+            if ActiveRecord::Base.connection.adapter_name == "Mysql2" then
+              keyword = keyword.gsub("\\", "\\\\\\\\\\\\\\\\").gsub(/"/, '\"').gsub(/%/, '\%').gsub(/_/, '\_')
+            elsif
+              keyword = keyword.gsub(/"/, "_") # Avoid internal error
+            end
+            wild_search_word = '"%' + URI.decode(keyword) + '%"'
           end
           query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word and wild_search_word != '"%%"'
         end
@@ -33,7 +56,13 @@
       query_params = query_params.gsub(")  (", ") OR (")
     else
       search_words.each do |search_word|
-        wild_search_word = '"%' + URI.decode(search_word.to_s) + '%"'
+        keyword = search_word.to_s
+        if ActiveRecord::Base.connection.adapter_name == "Mysql2" then
+          keyword = keyword.gsub("\\", "\\\\\\\\\\\\\\\\").gsub(/"/, '\"').gsub(/%/, '\%').gsub(/_/, '\_')
+        elsif
+          keyword = keyword.gsub(/"/, "_")  # Avoid internal error
+        end
+        wild_search_word = '"%' + URI.decode(keyword) + '%"'
         query_params += " (title LIKE #{wild_search_word} OR summary LIKE #{wild_search_word} OR content LIKE #{wild_search_word}) " if wild_search_word != '"%%"'
       end unless search_words == []
       if params[:and_or] == "AND" then
