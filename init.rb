@@ -12,7 +12,7 @@ Redmine::Plugin.register :redmine_knowledgebase do
   author      'Alex Bevilacqua / y.yoshida'
   description 'A plugin for Redmine that adds knowledgebase functionality'
   url         'https://github.com/yoshidayo/redmine_knowledgebase'
-  version     '2.3.1'
+  version     '2.3.2'
 
   requires_redmine :version_or_higher => '2.0.0'
   requires_acts_as_taggable_on

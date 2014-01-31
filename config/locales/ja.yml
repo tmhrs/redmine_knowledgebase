@@ -83,7 +83,7 @@ ja:
   flg_involved_articles: チケット画面に知識DBの検索フィールドを追加
   show_involved_articles_count: チケット画面で表示する記事数の上限
   use_columns_for_default_search: チケット画面での標準検索に使用する項目
-  label_default_search: 標準検索
+  label_default_search: 表示
   label_searched_articles: 検索結果
   label_search_keyword: キーワードで検索
   label_search_result_none: 該当なし
